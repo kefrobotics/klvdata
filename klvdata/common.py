@@ -124,11 +124,17 @@ def linear_map(src_value, src_domain, dst_range):
     return dst_value
 
 
-def bytes_to_float(value, _domain, _range, _error=None):
-    """Convert the fixed point value self.value to a floating point value."""
+def bytes_to_float(value, _domain, _range, _error=[-32768, 15578718931713]):
+    """Convert the fixed point value self.value to a floating point value.
+
+        The list of _error values tells the parser to skip these bytes because they
+        don't seem to be valid
+    """
+    if not hasattr(_error, "__len__"):
+        _error = [_error]
     src_value = int().from_bytes(value, byteorder='big', signed=(min(_domain) < 0))
 
-    if src_value == _error:
+    if src_value in _error:
         return None
 
     return linear_map(src_value, _domain, _range)

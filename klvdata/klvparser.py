@@ -63,10 +63,14 @@ class KLVParser(object):
 
         assert size > 0
 
-        data = self.source.read(size)
+        if size < 1e6:
+            data = self.source.read(size)
 
-        if data:
-            return data
+            if data:
+                return data
+            else:
+                raise StopIteration
         else:
-            raise StopIteration
+            data = None
 
+            return data
